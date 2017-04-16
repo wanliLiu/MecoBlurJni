@@ -1,7 +1,6 @@
 #include <ImageBlur.c>
 #include <android/log.h>
 #include <android/bitmap.h>
-#include <android/log.h>
 #include "com_milanoo_meco_JniBlur_ImageBlur.h"
 
 

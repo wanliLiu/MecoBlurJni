@@ -11,12 +11,13 @@ android {
         versionCode 1
         versionName "1.0"
 
-        ndk {
-            moduleName "MecoImageBlur"
-            moduleName "stringJni"
-            ldLibs "log", "z", "m","jnigraphics"
-            abiFilters "armeabi", "armeabi-v7a", "x86"
-        }
+        //自动进行  不需要写android.mk文件，生成的.so文件不需要指定地址
+//        ndk {
+////            moduleName "MecoImageBlur"
+//            moduleName "stringJni"
+//            ldLibs "log", "z", "m","jnigraphics"
+//            abiFilters "armeabi", "armeabi-v7a", "x86"
+//        }
     }
     buildTypes {
         release {
@@ -24,9 +25,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    //手动生成，需要自己写android.mk文件，并且生成的.so文件需要指定
+    sourceSets.main {
+        jni.srcDirs = []//屏蔽gradle的jni生成过程
+        jniLibs.srcDir "src/main/libs"
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:25.1.0'
 }
+
+/**
+ * 有两种方式生成so
+ * 1.直接通过jni ->ndk build  然后生成文件，这个要依赖自己写android.mk文件，同时生成的文件位置在jni同目录下，这个种方式
+ * 引用还要加
+ *     sourceSets.main {*       jni.srcDirs = []//屏蔽gradle的jni生成过程
+ *       jniLibs.srcDir "src/main/libs"
+ *}*
+ * 2.第二种就是直接用gradle ndk编译，自动生成android.mk文件，生成的.so文件存在于build.intermediates.ndk中,同时不需要指定
+ * so文件的位置
+ *
+ *
+ * 总结：如果反复验证调试ndk，用自动生成的，如果只是要so,还是手动编译生成，比如编译别人写的c，只是包名不一样而已。
+ */
